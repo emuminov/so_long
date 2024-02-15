@@ -1,5 +1,6 @@
 NAME=so_long
 OBJ=main.o
+FLAGS=-Wall -Wextra -Werror
 
 $(NAME): $(OBJ)
 	make ./minilibx-linux/
@@ -7,4 +8,4 @@ $(NAME): $(OBJ)
 	$(CC) $(OBJ) libmlx.a -o $(NAME) -lXext -lX11 -lm -lz
 
 %.o: %.c
-	$(CC) -Wall -Wextra -Werror -c $< -o $@
+	$(CC) -c $< -o $@

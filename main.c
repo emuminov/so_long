@@ -6,11 +6,12 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/13 11:56:51 by emuminov          #+#    #+#             */
-/*   Updated: 2024/02/13 16:51:17 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/02/15 13:42:27 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
+#include <X11/keysym.h>
 #include "minilibx-linux/mlx.h"
 
 typedef struct	s_data {
@@ -26,11 +27,21 @@ typedef struct	s_vars {
 	void	*win;
 }				t_vars;
 
-int	close(int keycode, t_vars *vars)
+int keyhook(int keycode, t_vars *vars)
 {
-	printf("%d\n", keycode);
-	if (keycode == 65307)
-		mlx_destroy_window(vars->mlx, vars->win);
+	printf("The key has been pressed: (%d)\n", keycode);
+	return (0);
+}
+
+int mousehook(int mousecode)
+{
+	printf("Mouse event. %d\n", mousecode);
+	return (0);
+}
+
+int mousemovehook(int x, int y, t_vars *vars)
+{
+	printf("Hello! %d %d\n", x, y);
 	return (0);
 }
 
@@ -40,7 +51,8 @@ int	main(void)
 
 	vars.mlx = mlx_init();
 	vars.win = mlx_new_window(vars.mlx, 1920, 1080, "Hello world!");
-	mlx_hook(vars.win, 2, 1L << 0, close, &vars);
+	mlx_hook(vars.win, 6, 1L<<6, mousemovehook, &vars);
+	// mlx_key_hook(vars.win, keyhook, &vars);
+	// mlx_mouse_hook(vars.win, mousehook, &vars);
 	mlx_loop(vars.mlx);
 }
-
