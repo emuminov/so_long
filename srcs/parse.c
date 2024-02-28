@@ -1,23 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 09:48:02 by emuminov          #+#    #+#             */
-/*   Updated: 2024/02/28 17:08:53 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/02/28 19:48:15 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/so_long.h"
 
-typedef struct	s_map
-{
-	char	**rows;
-	int		x;
-	int		y;
-}				t_map;
-
-t_list	*read_map_to_list(int fd)
+static t_list	*read_map_to_list(int fd)
 {
 	t_list	*rows_list;
 	t_list	*node;
@@ -39,7 +34,7 @@ t_list	*read_map_to_list(int fd)
 		if (!node)
 		{
 			ft_lstclear(&rows_list, free);
-			ft_putstr_fd("Memory error reading map\n", STDERR_FILENO);
+			ft_putstr_fd("Memory error while reading map\n", STDERR_FILENO);
 			exit(EXIT_FAILURE);
 		}
 		ft_lstadd_back(&rows_list, node);
@@ -48,7 +43,7 @@ t_list	*read_map_to_list(int fd)
 }
 
 /* Initializes dimensions and checks if the map is rectangular */
-void	init_dimensions(t_map *map)
+static void	init_dimensions(t_map *map)
 {
 	int	i;
 
@@ -64,15 +59,16 @@ void	init_dimensions(t_map *map)
 		}
 		i++;
 	}
+	map->y = i;
 }
 
-void	list_to_matrix(t_list *lst, t_map *map)
+static char	**list_to_matrix(t_list *lst)
 {
 	char	**res;
 	t_list	*curr;
 	int		i;
 
-	res = malloc(sizeof(char *) * (map->y + 1));
+	res = malloc(sizeof(char *) * (ft_lstsize(lst) + 1));
 	if (!res)
 	{
 		ft_lstclear(&lst, free);
@@ -87,11 +83,11 @@ void	list_to_matrix(t_list *lst, t_map *map)
 		curr = curr->next;
 		i++;
 	}
-	res[map->y] = NULL;
-	map->rows = res;
+	res[i] = NULL;
+	return (res);
 }
 
-void	remove_new_lines(char **rows)
+static void	remove_new_lines(char **rows)
 {
 	int		i;
 	int		j;
@@ -119,17 +115,20 @@ void	remove_new_lines(char **rows)
 //   - Map must be a rectangle
 //   - Exit and collectibles must be reachable by player (no enemies,
 //   walls etc are blocking them)
-void	parse(char *file)
+void	parse(char *file, t_map *map)
 {
 	int		fd;
-	t_map	map;
 	t_list	*rows_list;
 
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
+	{
+		ft_putstr_fd("fd error\n", STDERR_FILENO);
 		exit(EXIT_FAILURE);
+	}
 	rows_list = read_map_to_list(fd);
-	list_to_matrix(rows_list, &map);
-	remove_new_lines(map.rows);
-	init_dimensions(&map);
+	map->rows = list_to_matrix(rows_list);
+	ft_lstclear(&rows_list, free);
+	remove_new_lines(map->rows);
+	init_dimensions(map);
 }
