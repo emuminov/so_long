@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 09:48:02 by emuminov          #+#    #+#             */
-/*   Updated: 2024/02/28 10:51:21 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/02/28 16:32:11 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,14 @@
 
 typedef struct	s_map
 {
-	t_list	*rows;
+	char	**rows;
 	int		x;
 	int		y;
 }				t_map;
 
-void	get_map_rows(int fd, t_map *map)
+t_list	*read_map_to_list(int fd)
 {
-	t_list	*rows;
+	t_list	*rows_list;
 	t_list	*node;
 	char	*curr_line;
 
@@ -31,7 +31,7 @@ void	get_map_rows(int fd, t_map *map)
 		ft_putstr_fd("Empty map\n", STDERR_FILENO);
 		exit(EXIT_FAILURE);
 	}
-	rows = ft_lstnew(curr_line);
+	rows_list = ft_lstnew(curr_line);
 	while (curr_line)
 	{
 		curr_line = get_next_line(fd);
@@ -40,32 +40,76 @@ void	get_map_rows(int fd, t_map *map)
 		node = ft_lstnew(curr_line);
 		if (!node)
 		{
-			ft_lstclear(&rows, free);
+			ft_lstclear(&rows_list, free);
 			ft_putstr_fd("Memory error reading map\n", STDERR_FILENO);
 			exit(EXIT_FAILURE);
 		}
-		ft_lstadd_back(&rows, node);
+		ft_lstadd_back(&rows_list, node);
 	}
-	map->rows = rows;
+	return (rows_list);
 }
 
 /* Initializes dimensions and checks if the map is rectangular */
-void	check_dimensions(t_map *map)
+void	init_dimensions(t_list *lst, t_map *map)
 {
 	t_list	*curr;
 
-	curr = map->rows;
+	curr = lst;
 	map->x = ft_strlen(curr->content);
 	map->y = ft_lstsize(curr);
 	while (curr)
 	{
 		if ((int)ft_strlen(curr->content) != map->x)
 		{
-			ft_lstclear(&map->rows, free);
+			ft_lstclear(&lst, free);
 			ft_putstr_fd("Map is not rectangular\n", STDERR_FILENO);
 			exit(EXIT_FAILURE);
 		}
 		curr = curr->next;
+	}
+}
+
+void	list_to_matrix(t_list *lst, t_map *map)
+{
+	char	**res;
+	t_list	*curr;
+	int		i;
+
+	res = malloc(sizeof(char *) * (map->y + 1));
+	if (!res)
+	{
+		ft_lstclear(&lst, free);
+		ft_putstr_fd("Memory error reading map\n", STDERR_FILENO);
+		exit(EXIT_FAILURE);
+	}
+	curr = lst;
+	i = 0;
+	while (curr)
+	{
+		res[i] = curr->content;
+		curr = curr->next;
+		i++;
+	}
+	res[map->y] = NULL;
+	map->rows = res;
+}
+
+void	remove_new_lines(char **rows)
+{
+	int		i;
+	int		j;
+
+	i = 0;
+	while (rows[i])
+	{
+		j = 0;
+		while (rows[i][j])
+		{
+			if (rows[i][j] == '\n')
+				rows[i][j] = '\0';
+			j++;
+		}
+		i++;
 	}
 }
 
@@ -82,10 +126,13 @@ void	parse(char *file)
 {
 	int		fd;
 	t_map	map;
+	t_list	*rows_list;
 
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
 		exit(EXIT_FAILURE);
-	get_map_rows(fd, &map);
-	check_dimensions(&map);
+	rows_list = read_map_to_list(fd);
+	list_to_matrix(rows_list, &map);
+	remove_new_lines(map.rows);
+	init_dimensions(&map);
 }
