@@ -1,0 +1,18 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-g",
+      "-c",
+      "-o",
+      "objs/main.o",
+      "srcs/main.c"
+    ],
+    "directory": "/home/pdlmn/Personal/programming/42/so_long",
+    "file": "/home/pdlmn/Personal/programming/42/so_long/srcs/main.c",
+    "output": "/home/pdlmn/Personal/programming/42/so_long/objs/main.o"
+  }
+]
