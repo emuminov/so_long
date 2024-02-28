@@ -1,12 +1,10 @@
-/* ************************************************************************** */
-/*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 09:48:02 by emuminov          #+#    #+#             */
-/*   Updated: 2024/02/28 16:32:11 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/02/28 17:08:53 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,22 +48,21 @@ t_list	*read_map_to_list(int fd)
 }
 
 /* Initializes dimensions and checks if the map is rectangular */
-void	init_dimensions(t_list *lst, t_map *map)
+void	init_dimensions(t_map *map)
 {
-	t_list	*curr;
+	int	i;
 
-	curr = lst;
-	map->x = ft_strlen(curr->content);
-	map->y = ft_lstsize(curr);
-	while (curr)
+	i = 0;
+	map->x = ft_strlen(map->rows[0]);
+	while (map->rows[i])
 	{
-		if ((int)ft_strlen(curr->content) != map->x)
+		if ((int)ft_strlen(map->rows[i]) != map->x)
 		{
-			ft_lstclear(&lst, free);
+			ft_free_split(map->rows);
 			ft_putstr_fd("Map is not rectangular\n", STDERR_FILENO);
 			exit(EXIT_FAILURE);
 		}
-		curr = curr->next;
+		i++;
 	}
 }
 
