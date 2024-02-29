@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 09:51:11 by emuminov          #+#    #+#             */
-/*   Updated: 2024/02/29 10:25:43 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/02/29 14:20:49 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,19 @@ enum e_tokens
 	player_tile = 'P',
 	collectible_tile = 'C',
 	exit_tile = 'E',
-	enemy_tile = 'V'
+	enemy_tile = 'V',
+	occupied_tile = '-'
 };
+
+typedef struct	s_pos
+{
+	int	x;
+	int	y;
+}				t_pos; 
 
 typedef struct	s_map
 {
+	t_pos	player_position;
 	char	**rows;
 	int		x;
 	int		y;

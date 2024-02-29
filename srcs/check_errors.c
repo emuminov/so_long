@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 19:52:31 by emuminov          #+#    #+#             */
-/*   Updated: 2024/02/29 10:35:44 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/02/29 14:36:30 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@
 //   - [x] Map must have exit, collectible and starting position
 //   - [x] Map must not have duplicate exit and starting position
 //   - [x] Map must be a rectangle (init_dimensions)
-//   - Exit and collectibles must be reachable by player (no enemies,
+//   - [x] Exit and collectibles must be reachable by player (no enemies,
 //   walls etc are blocking them)
 
-void	check_extension(char *file)
+void	check_filename_extension(char *file)
 {
 	int		len;
 	char	*ext;
@@ -41,7 +41,7 @@ void	check_extension(char *file)
 	}
 }
 
-void	check_tokens(t_map *map)
+void	check_exit_and_collectibles_presence(t_map *map)
 {
 	int	i;
 	int	j;
@@ -56,7 +56,11 @@ void	check_tokens(t_map *map)
 		while (map->rows[i][j])
 		{
 			if (map->rows[i][j] == player_tile)
+			{
 				map->player_count++;	
+				map->player_position.y = i;
+				map->player_position.x = j;
+			}
 			if (map->rows[i][j] == exit_tile)
 				map->exit_count++;	
 			if (map->rows[i][j] == collectible_tile)
@@ -73,7 +77,7 @@ void	check_tokens(t_map *map)
 	}
 }
 
-void	check_walls(t_map *map)
+void	check_walls_presence(t_map *map)
 {
 	int	i;
 
@@ -101,10 +105,69 @@ void	check_walls(t_map *map)
 	}
 }
 
-void	check_errors(t_map *map)
+// TODO: handle potential errors in this function
+char	**clone_matrix(int l, char **matrix)
 {
-	// check_extension(map);
-	// check_walls(map);
-	// check_tokens_number(map);
-	// check_tokens_availability(map);
+	char	**res;
+	int		i;
+
+	res = malloc(sizeof(char *) * (l + 1));
+	if (!res)
+		return (NULL);
+	i = 0;
+	while (matrix[i])
+	{
+		res[i] = ft_strdup(matrix[i]);
+		if (!res[i])
+		{
+			ft_free_split(res);
+			return (NULL);
+		}
+		i++;
+	}
+	res[i] = NULL;
+	return (res);
+}
+
+void	propagate_tokens(t_pos pos, char **rows)
+{
+	if (rows[pos.y][pos.x] == wall_tile ||
+		rows[pos.y][pos.x] == enemy_tile ||
+		rows[pos.y][pos.x] == occupied_tile ||
+		pos.y < 0 || pos.x < 0)
+		return ;
+	if (rows[pos.y][pos.x] != player_tile)
+		rows[pos.y][pos.x] = occupied_tile;
+	propagate_tokens((t_pos){.x=pos.x - 1, .y=pos.y}, rows);
+	propagate_tokens((t_pos){.x=pos.x + 1, .y=pos.y}, rows);
+	propagate_tokens((t_pos){.x=pos.x, .y=pos.y - 1}, rows);
+	propagate_tokens((t_pos){.x=pos.x, .y=pos.y + 1}, rows);
+}
+
+void	check_exit_and_collectibles_availability(t_map *map)
+{
+	char	**cloned_map;
+	int		i;
+
+	cloned_map = clone_matrix(map->y, map->rows);
+	if (!cloned_map)
+	{
+		ft_free_split(map->rows);
+		ft_putstr_fd("Memory error\n", STDERR_FILENO);
+		exit(EXIT_FAILURE);
+	}
+	propagate_tokens(map->player_position, cloned_map);
+	i = 0;
+	while (cloned_map[i])
+	{
+		if (ft_strchr(cloned_map[i], exit_tile) ||
+			ft_strchr(cloned_map[i], collectible_tile))
+		{
+			ft_free_split(map->rows);
+			ft_free_split(cloned_map);
+			ft_putstr_fd("Inaccessible exit or collectible\n", STDERR_FILENO);
+			exit(EXIT_FAILURE);
+		}
+		i++;
+	}
 }
