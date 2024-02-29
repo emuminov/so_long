@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 09:48:02 by emuminov          #+#    #+#             */
-/*   Updated: 2024/02/28 19:48:15 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/02/29 10:23:05 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,15 +106,6 @@ static void	remove_new_lines(char **rows)
 	}
 }
 
-// TODO LIST:
-// 1. Read and parse the map, check for map errors
-//   - Map must have the .ber extension
-//   - Map must have exit, collectible and starting position
-//   - Map must not have duplicate exit and starting position
-//   - Map must be surrounded by walls
-//   - Map must be a rectangle
-//   - Exit and collectibles must be reachable by player (no enemies,
-//   walls etc are blocking them)
 void	parse(char *file, t_map *map)
 {
 	int		fd;
@@ -128,7 +119,8 @@ void	parse(char *file, t_map *map)
 	}
 	rows_list = read_map_to_list(fd);
 	map->rows = list_to_matrix(rows_list);
-	ft_lstclear(&rows_list, free);
+	ft_lstclear(&rows_list, id);
 	remove_new_lines(map->rows);
 	init_dimensions(map);
+	close(fd);
 }
