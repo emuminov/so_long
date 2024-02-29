@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 09:48:02 by emuminov          #+#    #+#             */
-/*   Updated: 2024/02/29 10:23:05 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/02/29 10:40:03 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ static char	**list_to_matrix(t_list *lst)
 	while (curr)
 	{
 		res[i] = curr->content;
+		free(curr);
 		curr = curr->next;
 		i++;
 	}
