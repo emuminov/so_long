@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 09:51:11 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/01 10:48:56 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/01 12:08:08 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,5 +51,6 @@ typedef struct	s_token_count {
 void	parse(char *file, t_map *map);
 int		safe_open(char *file);
 int		safe_close(int fd, t_list *lst);
+char	**clone_matrix(int l, char **matrix);
 
 #endif 

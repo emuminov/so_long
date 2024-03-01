@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/13 11:56:51 by emuminov          #+#    #+#             */
-/*   Updated: 2024/02/28 19:52:05 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/01 12:07:16 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ int	main(int argc, char **argv)
 		return (EXIT_FAILURE);
 	ft_bzero(&map, sizeof(map));
 	parse(argv[1], &map);
-	// check_errors(&map);
 }
 // void	*image;
 // t_state	state;

@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 19:52:31 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/01 10:37:57 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/01 12:06:36 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 //   - [x] Map must be a rectangle (init_dimensions)
 //   - [x] Exit and collectibles must be reachable by player (no enemies,
 //   walls etc are blocking them)
+//   - [x] Map should not be too big
+//   - [ ] There should be no non-allowed symbols
 
 void	check_filename_extension(char *file)
 {
@@ -102,28 +104,19 @@ void	check_walls_presence(t_map *map)
 	}
 }
 
-// TODO: handle potential errors in this function
-char	**clone_matrix(int l, char **matrix)
+void	check_map_size(t_map *map)
 {
-	char	**res;
-	int		i;
-
-	res = malloc(sizeof(char *) * (l + 1));
-	if (!res)
-		return (NULL);
-	i = 0;
-	while (matrix[i])
+	if (map->y > 15 || map->x > 30)
 	{
-		res[i] = ft_strdup(matrix[i]);
-		if (!res[i])
-		{
-			ft_free_split(res);
-			return (NULL);
-		}
-		i++;
+		ft_putstr_fd("Map is too big\n", STDERR_FILENO);
+		ft_free_split(map->rows);
+		exit(EXIT_FAILURE);
 	}
-	res[i] = NULL;
-	return (res);
+}
+
+void	check_non_allowed_tokens(t_map *map)
+{
+	
 }
 
 void	propagate_tokens(t_pos pos, char **rows)

@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 10:40:07 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/01 10:48:40 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/01 12:07:38 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,4 +34,27 @@ int	safe_close(int fd, t_list *lst)
 		exit(EXIT_FAILURE);
 	}
 	return (1);
+}
+
+char	**clone_matrix(int l, char **matrix)
+{
+	char	**res;
+	int		i;
+
+	res = malloc(sizeof(char *) * (l + 1));
+	if (!res)
+		return (NULL);
+	i = 0;
+	while (matrix[i])
+	{
+		res[i] = ft_strdup(matrix[i]);
+		if (!res[i])
+		{
+			ft_free_split(res);
+			return (NULL);
+		}
+		i++;
+	}
+	res[i] = NULL;
+	return (res);
 }
