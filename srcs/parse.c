@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 09:48:02 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/01 10:49:05 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/01 13:07:12 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ static t_list	*read_map_to_list(int fd)
 }
 
 /* Initializes dimensions and checks if the map is rectangular */
-static void	init_dimensions(t_map *map)
+static void	check_dimensions(t_map *map)
 {
 	int	i;
 
@@ -66,6 +66,7 @@ static char	**list_to_matrix(t_list *lst)
 {
 	char	**res;
 	t_list	*curr;
+	t_list	*next;
 	int		i;
 
 	res = malloc(sizeof(char *) * (ft_lstsize(lst) + 1));
@@ -80,8 +81,9 @@ static char	**list_to_matrix(t_list *lst)
 	while (curr)
 	{
 		res[i] = curr->content;
+		next = curr->next;
 		free(curr);
-		curr = curr->next;
+		curr = next;
 		i++;
 	}
 	res[i] = NULL;
@@ -113,11 +115,17 @@ void	parse(char *file, t_map *map)
 	t_list			*rows_list;
 	t_token_count	tc;
 
+	check_filename_extension(file);
 	fd = safe_open(file);
 	ft_bzero(&tc, sizeof(tc));
 	rows_list = read_map_to_list(fd);
 	safe_close(fd, rows_list);
 	map->rows = list_to_matrix(rows_list);
 	remove_new_lines(map->rows);
-	init_dimensions(map);
+	check_dimensions(map);
+	check_map_size(map);
+	check_non_allowed_tokens(map);
+	check_walls_presence(map);
+	check_exit_and_collectibles_presence(&tc, map);
+	check_exit_and_collectibles_availability(map);
 }

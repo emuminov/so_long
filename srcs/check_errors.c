@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 19:52:31 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/01 12:06:36 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/01 12:46:10 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 //   - [x] Exit and collectibles must be reachable by player (no enemies,
 //   walls etc are blocking them)
 //   - [x] Map should not be too big
-//   - [ ] There should be no non-allowed symbols
+//   - [x] There should be no non-allowed symbols
 
 void	check_filename_extension(char *file)
 {
@@ -116,10 +116,32 @@ void	check_map_size(t_map *map)
 
 void	check_non_allowed_tokens(t_map *map)
 {
-	
+	int	i;
+	int	j;
+
+	i = 0;
+	while (map->rows[i])
+	{
+		j = 0;
+		while (map->rows[i][j])
+		{
+			if (map->rows[i][j] != empty_tile &&
+				map->rows[i][j] != wall_tile &&
+				map->rows[i][j] != collectible_tile &&
+				map->rows[i][j] != exit_tile &&
+				map->rows[i][j] != player_tile &&
+				map->rows[i][j] != enemy_tile)
+			{
+				ft_free_split(map->rows);
+				exit(EXIT_FAILURE);
+			}
+			j++;
+		}
+		i++;
+	}
 }
 
-void	propagate_tokens(t_pos pos, char **rows)
+static void	propagate_tokens(t_pos pos, char **rows)
 {
 	if (rows[pos.y][pos.x] == wall_tile ||
 		rows[pos.y][pos.x] == enemy_tile ||
