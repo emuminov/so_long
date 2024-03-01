@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 19:52:31 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/01 12:46:10 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/01 13:23:28 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,6 +133,7 @@ void	check_non_allowed_tokens(t_map *map)
 				map->rows[i][j] != enemy_tile)
 			{
 				ft_free_split(map->rows);
+				ft_putstr_fd("Bad token\n", STDERR_FILENO);
 				exit(EXIT_FAILURE);
 			}
 			j++;
