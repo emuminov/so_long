@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 19:52:31 by emuminov          #+#    #+#             */
-/*   Updated: 2024/02/29 14:36:30 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/01 10:37:57 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,15 +41,12 @@ void	check_filename_extension(char *file)
 	}
 }
 
-void	check_exit_and_collectibles_presence(t_map *map)
+void	check_exit_and_collectibles_presence(t_token_count *tc, t_map *map)
 {
 	int	i;
 	int	j;
 
 	i = 0;
-	map->exit_count = 0;
-	map->player_count = 0;
-	map->collectible_count = 0;
 	while (map->rows[i])
 	{
 		j = 0;
@@ -57,17 +54,17 @@ void	check_exit_and_collectibles_presence(t_map *map)
 		{
 			if (map->rows[i][j] == player_tile)
 			{
-				map->player_count++;	
+				tc->player_count++;	
 				map->player_position.y = i;
 				map->player_position.x = j;
 			}
 			if (map->rows[i][j] == exit_tile)
-				map->exit_count++;	
+				tc->exit_count++;	
 			if (map->rows[i][j] == collectible_tile)
-				map->collectible_count++;
-			if (map->player_count > 1 || map->exit_count > 1 ||
-				map->player_count == 0 || map->exit_count == 0 ||
-				map->collectible_count == 0)
+				tc->collectible_count++;
+			if (tc->player_count > 1 || tc->exit_count > 1 ||
+				tc->player_count == 0 || tc->exit_count == 0 ||
+				tc->collectible_count == 0)
 			{
 				ft_putstr_fd("Bad map", STDERR_FILENO);
 				ft_free_split(map->rows);

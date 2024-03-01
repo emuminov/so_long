@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 09:48:02 by emuminov          #+#    #+#             */
-/*   Updated: 2024/02/29 10:40:03 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/01 10:49:05 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,19 +109,15 @@ static void	remove_new_lines(char **rows)
 
 void	parse(char *file, t_map *map)
 {
-	int		fd;
-	t_list	*rows_list;
+	int				fd;
+	t_list			*rows_list;
+	t_token_count	tc;
 
-	fd = open(file, O_RDONLY);
-	if (fd < 0)
-	{
-		ft_putstr_fd("fd error\n", STDERR_FILENO);
-		exit(EXIT_FAILURE);
-	}
+	fd = safe_open(file);
+	ft_bzero(&tc, sizeof(tc));
 	rows_list = read_map_to_list(fd);
+	safe_close(fd, rows_list);
 	map->rows = list_to_matrix(rows_list);
-	ft_lstclear(&rows_list, id);
 	remove_new_lines(map->rows);
 	init_dimensions(map);
-	close(fd);
 }

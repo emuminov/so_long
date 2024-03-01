@@ -6,13 +6,12 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/13 11:56:51 by emuminov          #+#    #+#             */
-/*   Updated: 2024/02/28 09:58:33 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/02/28 19:52:05 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
-#include <X11/keysym.h>
-#include <stdlib.h>
+#include "../include/so_long.h"
 
 typedef struct	s_state {
 	void	*mlx;
@@ -39,24 +38,30 @@ int mousemovehook(int x, int y, t_state *vars)
 	return (0);
 }
 
-int	main(void)
+int	main(int argc, char **argv)
 {
-	void	*image;
-	t_state	state;
-	int 	width;
-	int 	height;
+	t_map	map;
 
-	state.mlx = mlx_init();
-	if (!state.mlx)
+	if (argc != 2)
 		return (EXIT_FAILURE);
-	parse();
-	// state.win = mlx_new_window(state.mlx, 600, 400, "Hello world!");
-	// width = 900;
-	// height = 900;
-	// image = mlx_xpm_file_to_image(state.mlx, "./us.xpm", &width, &height);
-	// mlx_put_image_to_window(state.mlx, state.win, image, 0, 0);
-	// mlx_loop(state.mlx);
-	// mlx_destroy_window(state.mlx, state.win);
-	// mlx_destroy_display(state.mlx);
-	// free(state.mlx);
+	ft_bzero(&map, sizeof(map));
+	parse(argv[1], &map);
+	// check_errors(&map);
 }
+// void	*image;
+// t_state	state;
+// int 	width;
+// int 	height;
+//
+// state.mlx = mlx_init();
+// if (!state.mlx)
+// 	return (EXIT_FAILURE);
+// state.win = mlx_new_window(state.mlx, 600, 400, "Hello world!");
+// width = 900;
+// height = 900;
+// image = mlx_xpm_file_to_image(state.mlx, "./us.xpm", &width, &height);
+// mlx_put_image_to_window(state.mlx, state.win, image, 0, 0);
+// mlx_loop(state.mlx);
+// mlx_destroy_window(state.mlx, state.win);
+// mlx_destroy_display(state.mlx);
+// free(state.mlx);

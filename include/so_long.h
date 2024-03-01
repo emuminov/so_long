@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 09:51:11 by emuminov          #+#    #+#             */
-/*   Updated: 2024/02/29 14:20:49 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/01 10:48:56 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,12 +40,16 @@ typedef struct	s_map
 	char	**rows;
 	int		x;
 	int		y;
+}				t_map;
+
+typedef struct	s_token_count {
 	int		player_count;
 	int		collectible_count;
 	int		exit_count;
-}				t_map;
+}				t_token_count;
 
 void	parse(char *file, t_map *map);
-void	id(void *ptr);
+int		safe_open(char *file);
+int		safe_close(int fd, t_list *lst);
 
 #endif 

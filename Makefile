@@ -1,7 +1,3 @@
-$(NAME): $(OBJ)
-	$(MAKE) -C ./minilibx-linux/
-	$(CC) $(OBJ) $(MINILIBX) -o $(NAME) -lXext -lX11 -lm -lz
-
 #comilation vars-----------------------------------
 CC=cc
 CFLAGS=-Wall -Wextra -Werror -g
@@ -11,7 +7,9 @@ NAME=so_long
 MINILIBX_DIR=minilibx-linux
 MINILIBX=$(MINILIBX_DIR)/libmlx_Linux.a
 
-FILES=main.c
+FILES=main.c \
+	  parse.c \
+	  check_errors.c
 HEAD_FILE=so_long.h
 
 HEAD_DIR=include
@@ -29,14 +27,8 @@ LIB=$(LIB_DIR)/libft.a
 
 #rules---------------------------------------------
 $(NAME): $(LIB) $(HEADER) $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) $(LIB) -o $@
-
-$(NAME): $(OBJS)
 	$(MAKE) -C ./minilibx-linux/
-	$(CC) $(OBJ) $(MINILIBX) -o $@ -lXext -lX11 -lm -lz
-
-$(BONUS_NAME): $(LIB) $(HEADER) $(BONUS_OBJS)
-	$(CC) $(CFLAGS) $(BONUS_OBJS) $(LIB) -o $(BONUS_NAME)
+	$(CC) $(CFLAGS) $(OBJS) $(MINILIBX) $(LIB) -o $@ -lXext -lX11 -lm -lz
 
 $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c $(SRCS) $(HEADER)
 	@mkdir -p $(OBJS_DIR)
