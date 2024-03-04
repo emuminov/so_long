@@ -4,12 +4,14 @@ CFLAGS=-Wall -Wextra -Werror -g
 
 #subject declarations------------------------------
 NAME=so_long
-MINILIBX_DIR=minilibx-linux
+MINILIBX_DIR=mlx
 MINILIBX=$(MINILIBX_DIR)/libmlx_Linux.a
+MINILIBX_FLAGS=-L ./mlx -lmlx -Ilmlx -lXext -lX11
 
 FILES=main.c \
 	  parse.c \
-	  check_errors.c
+	  check_errors.c \
+	  utils.c
 HEAD_FILE=so_long.h
 
 HEAD_DIR=include
@@ -27,8 +29,8 @@ LIB=$(LIB_DIR)/libft.a
 
 #rules---------------------------------------------
 $(NAME): $(LIB) $(HEADER) $(OBJS)
-	$(MAKE) -C ./minilibx-linux/
-	$(CC) $(CFLAGS) $(OBJS) $(MINILIBX) $(LIB) -o $@ -lXext -lX11 -lm -lz
+	$(MAKE) -C $(MINILIBX_DIR)
+	$(CC) $(CFLAGS) $(OBJS) $(MINILIBX) $(LIB) -o $@ $(MINILIBX_FLAGS)
 
 $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c $(SRCS) $(HEADER)
 	@mkdir -p $(OBJS_DIR)

@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 19:52:31 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/01 13:23:28 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/04 03:44:50 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,15 +54,15 @@ void	check_exit_and_collectibles_presence(t_token_count *tc, t_map *map)
 		j = 0;
 		while (map->rows[i][j])
 		{
-			if (map->rows[i][j] == player_tile)
+			if (map->rows[i][j] == player_token)
 			{
 				tc->player_count++;	
 				map->player_position.y = i;
 				map->player_position.x = j;
 			}
-			if (map->rows[i][j] == exit_tile)
+			if (map->rows[i][j] == exit_token)
 				tc->exit_count++;	
-			if (map->rows[i][j] == collectible_tile)
+			if (map->rows[i][j] == collectible_token)
 				tc->collectible_count++;
 			if (tc->player_count > 1 || tc->exit_count > 1 ||
 				tc->player_count == 0 || tc->exit_count == 0 ||
@@ -83,8 +83,8 @@ void	check_walls_presence(t_map *map)
 	i = 0;
 	while (i < map->x)
 	{
-		if (map->rows[0][i] != wall_tile ||
-			map->rows[map->y][i] != wall_tile)
+		if (map->rows[0][i] != wall_token ||
+			map->rows[map->y][i] != wall_token)
 		{
 			ft_putstr_fd("Bad walls\n", STDERR_FILENO);
 			exit(EXIT_FAILURE);
@@ -94,8 +94,8 @@ void	check_walls_presence(t_map *map)
 	i = 0;
 	while (i < map->y)
 	{
-		if (map->rows[i][0] != wall_tile ||
-			map->rows[i][map->x] != wall_tile)
+		if (map->rows[i][0] != wall_token ||
+			map->rows[i][map->x] != wall_token)
 		{
 			ft_putstr_fd("Bad walls\n", STDERR_FILENO);
 			exit(EXIT_FAILURE);
@@ -125,12 +125,12 @@ void	check_non_allowed_tokens(t_map *map)
 		j = 0;
 		while (map->rows[i][j])
 		{
-			if (map->rows[i][j] != empty_tile &&
-				map->rows[i][j] != wall_tile &&
-				map->rows[i][j] != collectible_tile &&
-				map->rows[i][j] != exit_tile &&
-				map->rows[i][j] != player_tile &&
-				map->rows[i][j] != enemy_tile)
+			if (map->rows[i][j] != floor_token &&
+				map->rows[i][j] != wall_token &&
+				map->rows[i][j] != collectible_token &&
+				map->rows[i][j] != exit_token &&
+				map->rows[i][j] != player_token &&
+				map->rows[i][j] != enemy_token)
 			{
 				ft_free_split(map->rows);
 				ft_putstr_fd("Bad token\n", STDERR_FILENO);
@@ -144,13 +144,13 @@ void	check_non_allowed_tokens(t_map *map)
 
 static void	propagate_tokens(t_pos pos, char **rows)
 {
-	if (rows[pos.y][pos.x] == wall_tile ||
-		rows[pos.y][pos.x] == enemy_tile ||
-		rows[pos.y][pos.x] == occupied_tile ||
+	if (rows[pos.y][pos.x] == wall_token ||
+		rows[pos.y][pos.x] == enemy_token ||
+		rows[pos.y][pos.x] == occupied_token ||
 		pos.y < 0 || pos.x < 0)
 		return ;
-	if (rows[pos.y][pos.x] != player_tile)
-		rows[pos.y][pos.x] = occupied_tile;
+	if (rows[pos.y][pos.x] != player_token)
+		rows[pos.y][pos.x] = occupied_token;
 	propagate_tokens((t_pos){.x=pos.x - 1, .y=pos.y}, rows);
 	propagate_tokens((t_pos){.x=pos.x + 1, .y=pos.y}, rows);
 	propagate_tokens((t_pos){.x=pos.x, .y=pos.y - 1}, rows);
@@ -173,8 +173,8 @@ void	check_exit_and_collectibles_availability(t_map *map)
 	i = 0;
 	while (cloned_map[i])
 	{
-		if (ft_strchr(cloned_map[i], exit_tile) ||
-			ft_strchr(cloned_map[i], collectible_tile))
+		if (ft_strchr(cloned_map[i], exit_token) ||
+			ft_strchr(cloned_map[i], collectible_token))
 		{
 			ft_free_split(map->rows);
 			ft_free_split(cloned_map);
