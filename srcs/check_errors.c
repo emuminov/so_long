@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 19:52:31 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/05 12:15:21 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/05 15:07:19 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,19 @@
 //   - [x] Map should not be too big
 //   - [x] There should be no non-allowed symbols
 
+void	terminate_with_message(t_game *game, char *msg)
+{
+	if (!game)
+	{
+		ft_putstr_fd(msg, STDERR_FILENO);
+		exit(EXIT_FAILURE);
+	}
+	if (game->map.rows)
+		ft_free_split(game->map.rows);
+	ft_putstr_fd(msg, STDERR_FILENO);
+	exit(EXIT_FAILURE);
+}
+
 void	check_filename_extension(char *file)
 {
 	int		len;
@@ -31,108 +44,83 @@ void	check_filename_extension(char *file)
 
 	len = ft_strlen(file);
 	if (len < 4)
-	{
-		ft_putstr_fd("Bad filename\n", STDERR_FILENO);
-		exit(EXIT_FAILURE);
-	}
+		terminate_with_message(NULL, "Bad filename\n");
 	ext = ft_strnstr(&file[len - 4], ".ber", 4);
 	if (!ext)
-	{
-		ft_putstr_fd("Bad extension\n", STDERR_FILENO);
-		exit(EXIT_FAILURE);
-	}
+		terminate_with_message(NULL, "Bad extension\n");
 }
 
-void	check_exit_and_collectibles_presence(t_token_count *tc, t_map *map)
+void	check_exit_and_collectibles_presence(t_game *game)
 {
 	int	i;
 	int	j;
 
 	i = 0;
-	while (map->rows[i])
+	while (game->map.rows[i])
 	{
 		j = 0;
-		while (map->rows[i][j])
+		while (game->map.rows[i][j])
 		{
-			if (map->rows[i][j] == player_token)
+			if (game->map.rows[i][j] == player_token)
 			{
-				tc->player_count++;	
-				map->player_pos.y = i;
-				map->player_pos.x = j;
+				game->token_count.player_count++;	
+				game->map.player_pos.y = i;
+				game->map.player_pos.x = j;
 			}
-			if (map->rows[i][j] == exit_token)
-				tc->exit_count++;	
-			if (map->rows[i][j] == collectible_token)
-				tc->collectible_count++;
-			if (tc->player_count > 1 || tc->exit_count > 1 ||
-				tc->player_count == 0 || tc->exit_count == 0 ||
-				tc->collectible_count == 0)
-			{
-				ft_putstr_fd("Bad map\n", STDERR_FILENO);
-				ft_free_split(map->rows);
-				exit(EXIT_FAILURE);
-			}
+			else if (game->map.rows[i][j] == exit_token)
+				game->token_count.exit_count++;	
+			else if (game->map.rows[i][j] == collectible_token)
+				game->token_count.collectible_count++;
+			j++;
 		}
+		i++;
 	}
+	if (game->token_count.player_count > 1 || game->token_count.exit_count > 1 ||
+			game->token_count.player_count == 0 || game->token_count.exit_count == 0 ||
+			game->token_count.collectible_count == 0)
+		terminate_with_message(game, "Bad map\n");
 }
 
-void	check_walls_presence(t_map *map)
-{
+void	check_walls_presence(t_game *game) {
 	int	i;
 
 	i = 0;
-	while (i < map->x)
+	while (i < game->map.x)
 	{
-		if (map->rows[0][i] != wall_token ||
-			map->rows[map->y][i] != wall_token)
-		{
-			ft_putstr_fd("Bad walls\n", STDERR_FILENO);
-			exit(EXIT_FAILURE);
-		}
+		if (game->map.rows[0][i] != wall_token ||
+			game->map.rows[game->map.y - 1][i] != wall_token)
+			terminate_with_message(game, "Bad walls\n");
 		i++;
 	}
 	i = 0;
-	while (i < map->y)
+	while (i < game->map.y)
 	{
-		if (map->rows[i][0] != wall_token ||
-			map->rows[i][map->x] != wall_token)
-		{
-			ft_putstr_fd("Bad walls\n", STDERR_FILENO);
-			exit(EXIT_FAILURE);
-		}
+		if (game->map.rows[i][0] != wall_token ||
+			game->map.rows[i][game->map.x - 1] != wall_token)
+			terminate_with_message(game, "Bad walls\n");
 		i++;
 	}
 }
 
-void	check_map_size(t_map *map)
-{
-	if (map->y > 15 || map->x > 30)
-	{
-		ft_putstr_fd("Map is too big\n", STDERR_FILENO);
-		ft_free_split(map->rows);
-		exit(EXIT_FAILURE);
-	}
-}
-
-void	check_non_allowed_tokens(t_map *map)
+void	check_non_allowed_tokens(t_game *game)
 {
 	int	i;
 	int	j;
 
 	i = 0;
-	while (map->rows[i])
+	while (game->map.rows[i])
 	{
 		j = 0;
-		while (map->rows[i][j])
+		while (game->map.rows[i][j])
 		{
-			if (map->rows[i][j] != floor_token &&
-				map->rows[i][j] != wall_token &&
-				map->rows[i][j] != collectible_token &&
-				map->rows[i][j] != exit_token &&
-				map->rows[i][j] != player_token &&
-				map->rows[i][j] != enemy_token)
+			if (game->map.rows[i][j] != floor_token &&
+				game->map.rows[i][j] != wall_token &&
+				game->map.rows[i][j] != collectible_token &&
+				game->map.rows[i][j] != exit_token &&
+				game->map.rows[i][j] != player_token &&
+				game->map.rows[i][j] != enemy_token)
 			{
-				ft_free_split(map->rows);
+				ft_free_split(game->map.rows);
 				ft_putstr_fd("Bad token\n", STDERR_FILENO);
 				exit(EXIT_FAILURE);
 			}
@@ -157,30 +145,31 @@ static void	propagate_tokens(t_pos pos, char **rows)
 	propagate_tokens((t_pos){.x=pos.x, .y=pos.y + 1}, rows);
 }
 
-void	check_exit_and_collectibles_availability(t_map *map)
+void	check_exit_and_collectibles_availability(t_game *game)
 {
 	char	**cloned_map;
 	int		i;
 
-	cloned_map = clone_matrix(map->y, map->rows);
+	cloned_map = clone_matrix(game->map.y, game->map.rows);
 	if (!cloned_map)
 	{
-		ft_free_split(map->rows);
+		ft_free_split(game->map.rows);
 		ft_putstr_fd("Memory error\n", STDERR_FILENO);
 		exit(EXIT_FAILURE);
 	}
-	propagate_tokens(map->player_pos, cloned_map);
+	propagate_tokens(game->map.player_pos, cloned_map);
 	i = 0;
 	while (cloned_map[i])
 	{
 		if (ft_strchr(cloned_map[i], exit_token) ||
 			ft_strchr(cloned_map[i], collectible_token))
 		{
-			ft_free_split(map->rows);
+			ft_free_split(game->map.rows);
 			ft_free_split(cloned_map);
 			ft_putstr_fd("Inaccessible exit or collectible\n", STDERR_FILENO);
 			exit(EXIT_FAILURE);
 		}
 		i++;
 	}
+	ft_free_split(cloned_map);
 }

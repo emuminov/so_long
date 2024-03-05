@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 09:51:11 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/05 12:14:31 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/05 14:44:15 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,17 +81,18 @@ typedef struct	s_game
 	t_tiles			tiles;
 	t_token_count	token_count;
 	int				player_moves_count;
+	int				collected_count;
 }				t_game;
 
-void	parse(char *file, t_map *map);
+void	parse(char *file, t_game *game);
 int		safe_open(char *file);
 int		safe_close(int fd, t_list *lst);
 char	**clone_matrix(int l, char **matrix);
 void	check_filename_extension(char *file);
-void	check_map_size(t_map *map);
-void	check_non_allowed_tokens(t_map *map);
-void	check_walls_presence(t_map *map);
-void	check_exit_and_collectibles_presence(t_token_count *tc, t_map *map);
-void	check_exit_and_collectibles_availability(t_map *map);
+void	check_non_allowed_tokens(t_game *game);
+void	check_walls_presence(t_game *game);
+void	check_exit_and_collectibles_presence(t_game *game);
+void	check_exit_and_collectibles_availability(t_game *game);
+void	terminate_with_message(t_game *game, char *msg);
 
 #endif 

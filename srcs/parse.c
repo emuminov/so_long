@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 09:48:02 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/05 12:13:44 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/05 14:56:06 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,24 +42,22 @@ static t_list	*read_map_to_list(int fd)
 	return (rows_list);
 }
 
-/* Initializes dimensions and checks if the map is rectangular */
-static void	check_dimensions(t_map *map)
+/* Initializes dimensions and checks if the map is rectangular or too big */
+static void	check_dimensions(t_game *game)
 {
 	int	i;
 
 	i = 0;
-	map->x = ft_strlen(map->rows[0]);
-	while (map->rows[i])
+	game->map.x = ft_strlen(game->map.rows[0]);
+	while (game->map.rows[i])
 	{
-		if ((int)ft_strlen(map->rows[i]) != map->x)
-		{
-			ft_free_split(map->rows);
-			ft_putstr_fd("Map is not rectangular\n", STDERR_FILENO);
-			exit(EXIT_FAILURE);
-		}
+		if ((int)ft_strlen(game->map.rows[i]) != game->map.x)
+			terminate_with_message(game, "Map is not rectangular\n");
 		i++;
 	}
-	map->y = i;
+	game->map.y = i;
+	if (game->map.y > 15 || game->map.x > 30)
+		terminate_with_message(game, "Map is too big\n");
 }
 
 static char	**list_to_matrix(t_list *lst)
@@ -73,8 +71,7 @@ static char	**list_to_matrix(t_list *lst)
 	if (!res)
 	{
 		ft_lstclear(&lst, free);
-		ft_putstr_fd("Memory error reading map\n", STDERR_FILENO);
-		exit(EXIT_FAILURE);
+		terminate_with_message(NULL, "Memory error\n");
 	}
 	curr = lst;
 	i = 0;
@@ -102,30 +99,30 @@ static void	remove_new_lines(char **rows)
 		while (rows[i][j])
 		{
 			if (rows[i][j] == '\n')
+			{
 				rows[i][j] = '\0';
+				break;
+			}
 			j++;
 		}
 		i++;
 	}
 }
 
-void	parse(char *file, t_map *map)
+void	parse(char *file, t_game *game)
 {
 	int				fd;
 	t_list			*rows_list;
-	t_token_count	tc;
 
-	// check_filename_extension(file);
+	check_filename_extension(file);
 	fd = safe_open(file);
-	ft_bzero(&tc, sizeof(tc));
 	rows_list = read_map_to_list(fd);
 	safe_close(fd, rows_list);
-	map->rows = list_to_matrix(rows_list);
-	remove_new_lines(map->rows);
-	check_dimensions(map);
-	// check_map_size(map);
-	// check_non_allowed_tokens(map);
-	// check_walls_presence(map);
-	// check_exit_and_collectibles_presence(&tc, map);
-	// check_exit_and_collectibles_availability(map);
+	game->map.rows = list_to_matrix(rows_list);
+	remove_new_lines(game->map.rows);
+	check_dimensions(game);
+	check_non_allowed_tokens(game);
+	check_walls_presence(game);
+	check_exit_and_collectibles_presence(game);
+	check_exit_and_collectibles_availability(game);
 }
