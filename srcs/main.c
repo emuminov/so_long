@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/13 11:56:51 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/05 13:35:35 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/05 15:55:46 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	init_xpm_tiles(t_game *game)
 	game->tiles.floor = mlx_xpm_file_to_image(game->mlx, FLOOR_TILE_PATH, &tile_size, &tile_size);
 	game->tiles.player_left = mlx_xpm_file_to_image(game->mlx, PLAYER_LEFT_TILE_PATH, &tile_size, &tile_size);
 	game->tiles.player_right = mlx_xpm_file_to_image(game->mlx, PLAYER_RIGHT_TILE_PATH, &tile_size, &tile_size);
-	game->tiles.player_current = mlx_xpm_file_to_image(game->mlx, PLAYER_RIGHT_TILE_PATH, &tile_size, &tile_size);
+	game->tiles.player_current = game->tiles.player_right;
 	game->tiles.collectible_1 = mlx_xpm_file_to_image(game->mlx, COLLECTIBLE_1_TILE_PATH, &tile_size, &tile_size);
 	game->tiles.collectible_2 = mlx_xpm_file_to_image(game->mlx, COLLECTIBLE_2_TILE_PATH, &tile_size, &tile_size);
 	game->tiles.collectible_3 = mlx_xpm_file_to_image(game->mlx, COLLECTIBLE_3_TILE_PATH, &tile_size, &tile_size);
@@ -59,6 +59,24 @@ void	put_tile_to_pos(t_game *game, void *tile, t_pos pos)
 {
 		mlx_put_image_to_window(game->mlx, game->win,
 		tile, pos.x * TILE_SIZE, pos.y * TILE_SIZE);
+}
+
+void	game_cleanup(t_game *game)
+{
+	mlx_destroy_image(game->mlx, game->tiles.wall);
+	mlx_destroy_image(game->mlx, game->tiles.exit);
+	mlx_destroy_image(game->mlx, game->tiles.enemy);
+	mlx_destroy_image(game->mlx, game->tiles.floor);
+	mlx_destroy_image(game->mlx, game->tiles.player_left);
+	mlx_destroy_image(game->mlx, game->tiles.player_right);
+	mlx_destroy_image(game->mlx, game->tiles.collectible_1);
+	mlx_destroy_image(game->mlx, game->tiles.collectible_2);
+	mlx_destroy_image(game->mlx, game->tiles.collectible_3);
+	mlx_destroy_window(game->mlx, game->win);
+	mlx_destroy_display(game->mlx);
+	free(game->mlx);
+	ft_free_split(game->map.rows);
+	exit(0);
 }
 
 void	move_player(t_pos new_pos, t_game *game)
@@ -74,19 +92,8 @@ void	move_player(t_pos new_pos, t_game *game)
 	}
 	else if (game->map.rows[new_pos.y][new_pos.x] == exit_token && game->collected_count == game->token_count.collectible_count)
 	{
-		// cleanup
-		mlx_destroy_image(game->mlx, game->tiles.wall);
-		mlx_destroy_image(game->mlx, game->tiles.exit);
-		mlx_destroy_image(game->mlx, game->tiles.enemy);
-		mlx_destroy_image(game->mlx, game->tiles.floor);
-		mlx_destroy_image(game->mlx, game->tiles.player_left);
-		mlx_destroy_image(game->mlx, game->tiles.player_right);
-		mlx_destroy_image(game->mlx, game->tiles.collectible_1);
-		mlx_destroy_image(game->mlx, game->tiles.collectible_2);
-		mlx_destroy_image(game->mlx, game->tiles.collectible_3);
-		mlx_destroy_window(game->mlx, game->win);
 		ft_printf("You won!");
-		exit(0);
+		game_cleanup(game);
 	}
 	// TODO: if new_pos == enemy YOU LOSE
 	if (new_pos.x < game->map.player_pos.x)
@@ -191,6 +198,4 @@ int	main(int argc, char **argv)
 // image = mlx_xpm_file_to_image(state.mlx, "./us.xpm", &width, &height);
 // mlx_put_image_to_window(state.mlx, state.win, image, 0, 0);
 // mlx_loop(state.mlx);
-// mlx_destroy_window(state.mlx, state.win);
-// mlx_destroy_display(state.mlx);
 // free(state.mlx);

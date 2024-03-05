@@ -1,6 +1,6 @@
 #comilation vars-----------------------------------
 CC=cc
-CFLAGS=-Wall -Wextra -Werror -g
+CFLAGS=-Wall -Wextra -Werror -g3
 
 #subject declarations------------------------------
 NAME=so_long
