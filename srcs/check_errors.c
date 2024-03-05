@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 19:52:31 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/04 03:44:50 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/05 10:50:19 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,8 @@ void	check_exit_and_collectibles_presence(t_token_count *tc, t_map *map)
 			if (map->rows[i][j] == player_token)
 			{
 				tc->player_count++;	
-				map->player_position.y = i;
-				map->player_position.x = j;
+				map->player_pos.y = i;
+				map->player_pos.x = j;
 			}
 			if (map->rows[i][j] == exit_token)
 				tc->exit_count++;	
@@ -169,7 +169,7 @@ void	check_exit_and_collectibles_availability(t_map *map)
 		ft_putstr_fd("Memory error\n", STDERR_FILENO);
 		exit(EXIT_FAILURE);
 	}
-	propagate_tokens(map->player_position, cloned_map);
+	propagate_tokens(map->player_pos, cloned_map);
 	i = 0;
 	while (cloned_map[i])
 	{

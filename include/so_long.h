@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 09:51:11 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/04 04:31:36 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/05 10:50:21 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,19 @@ enum e_tokens
 	occupied_token = '-'
 };
 
+typedef struct	s_pos
+{
+	int	x;
+	int	y;
+}				t_pos; 
+
 typedef struct	s_tiles
 {
 	void	*floor;
 	void	*wall;
 	void	*player_left;
 	void	*player_right;
+	void	*player_current;
 	void	*collectible_1;
 	void	*collectible_2;
 	void	*collectible_3;
@@ -51,15 +58,9 @@ typedef struct	s_tiles
 	void	*enemy;
 }				t_tiles;
 
-typedef struct	s_pos
-{
-	int	x;
-	int	y;
-}				t_pos; 
-
 typedef struct	s_map
 {
-	t_pos	player_position;
+	t_pos	player_pos;
 	char	**rows;
 	int		x;
 	int		y;
@@ -72,11 +73,15 @@ typedef struct	s_token_count
 	int		exit_count;
 }				t_token_count;
 
-typedef struct	s_mlx
+typedef struct	s_game
 {
-	void	*mlx;
-	void	*win;
-}				t_mlx;
+	void			*mlx;
+	void			*win;
+	t_map			map;
+	t_tiles			tiles;
+	t_token_count	token_count;
+	int				player_moves_count;
+}				t_game;
 
 void	parse(char *file, t_map *map);
 int		safe_open(char *file);
