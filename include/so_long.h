@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 09:51:11 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/01 12:08:08 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/01 12:53:03 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,5 +52,11 @@ void	parse(char *file, t_map *map);
 int		safe_open(char *file);
 int		safe_close(int fd, t_list *lst);
 char	**clone_matrix(int l, char **matrix);
+void	check_filename_extension(char *file);
+void	check_map_size(t_map *map);
+void	check_non_allowed_tokens(t_map *map);
+void	check_walls_presence(t_map *map);
+void	check_exit_and_collectibles_presence(t_token_count *tc, t_map *map);
+void	check_exit_and_collectibles_availability(t_map *map);
 
 #endif 

@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 19:52:31 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/01 13:23:28 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/01 13:28:05 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void	check_exit_and_collectibles_presence(t_token_count *tc, t_map *map)
 				tc->player_count == 0 || tc->exit_count == 0 ||
 				tc->collectible_count == 0)
 			{
-				ft_putstr_fd("Bad map", STDERR_FILENO);
+				ft_putstr_fd("Bad map\n", STDERR_FILENO);
 				ft_free_split(map->rows);
 				exit(EXIT_FAILURE);
 			}
@@ -84,7 +84,7 @@ void	check_walls_presence(t_map *map)
 	while (i < map->x)
 	{
 		if (map->rows[0][i] != wall_tile ||
-			map->rows[map->y][i] != wall_tile)
+			map->rows[map->y - 1][i] != wall_tile)
 		{
 			ft_putstr_fd("Bad walls\n", STDERR_FILENO);
 			exit(EXIT_FAILURE);
@@ -95,7 +95,7 @@ void	check_walls_presence(t_map *map)
 	while (i < map->y)
 	{
 		if (map->rows[i][0] != wall_tile ||
-			map->rows[i][map->x] != wall_tile)
+			map->rows[i][map->x - 1] != wall_tile)
 		{
 			ft_putstr_fd("Bad walls\n", STDERR_FILENO);
 			exit(EXIT_FAILURE);

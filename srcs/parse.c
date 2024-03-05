@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 09:48:02 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/01 13:07:12 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/05 12:11:28 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,10 +122,10 @@ void	parse(char *file, t_map *map)
 	safe_close(fd, rows_list);
 	map->rows = list_to_matrix(rows_list);
 	remove_new_lines(map->rows);
-	check_dimensions(map);
-	check_map_size(map);
-	check_non_allowed_tokens(map);
-	check_walls_presence(map);
-	check_exit_and_collectibles_presence(&tc, map);
-	check_exit_and_collectibles_availability(map);
+	// check_dimensions(map);
+	// check_map_size(map);
+	// check_non_allowed_tokens(map);
+	// check_walls_presence(map);
+	// check_exit_and_collectibles_presence(&tc, map);
+	// check_exit_and_collectibles_availability(map);
 }

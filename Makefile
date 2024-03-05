@@ -9,7 +9,8 @@ MINILIBX=$(MINILIBX_DIR)/libmlx_Linux.a
 
 FILES=main.c \
 	  parse.c \
-	  check_errors.c
+	  check_errors.c \
+	  utils.c
 HEAD_FILE=so_long.h
 
 HEAD_DIR=include

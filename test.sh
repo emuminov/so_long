@@ -1,0 +1,10 @@
+./so_long ./maps/no_extension
+./so_long ./maps/not_rectangle.ber
+./so_long ./maps/bad_token.ber
+./so_long ./maps/no_walls1.ber
+./so_long ./maps/no_walls2.ber
+./so_long ./maps/no_player.ber
+./so_long ./maps/no_collectibles.ber
+./so_long ./maps/no_exit.ber
+./so_long ./maps/duplicate_player.ber
+./so_long ./maps/duplicate_exit.ber
