@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/13 11:56:51 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/05 16:22:24 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/05 16:45:40 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,6 +157,44 @@ void	render_initial_graphic(t_game *game)
 	mlx_string_put(game->mlx, game->win, TILE_SIZE / 2, TILE_SIZE / 2, 0xADD8E6, "0");
 }
 
+int	render_next_frame(t_game *game)
+{
+	static int	frame;
+	static int	curr_img;
+	int	y;
+	int	x;
+
+	frame++;
+	if (frame % 25000 != 0)
+		return (0);
+	y = 0;
+	while (game->map.rows[y])
+	{
+		x = 0;
+		while (game->map.rows[y][x])
+		{
+			if (game->map.rows[y][x] == collectible_token && curr_img == 0)
+			{
+				put_tile_to_pos(game, game->tiles.collectible_1, (t_pos){.x=x, .y=y});
+				curr_img++;
+			}
+			else if (game->map.rows[y][x] == collectible_token && curr_img == 1)
+			{
+				put_tile_to_pos(game, game->tiles.collectible_2, (t_pos){.x=x, .y=y});
+				curr_img++;
+			}
+			else if (game->map.rows[y][x] == collectible_token)
+			{
+				put_tile_to_pos(game, game->tiles.collectible_3, (t_pos){.x=x, .y=y});
+				curr_img = 0;
+			}
+			x++;
+		}
+		y++;
+	}
+	return (0);
+}
+
 int	main(int argc, char **argv)
 {
 	static t_game	game;
@@ -180,6 +218,7 @@ int	main(int argc, char **argv)
 
 	// init hooks and loop
 	mlx_key_hook(game.win, handle_keyboard_input, &game);
+	mlx_loop_hook(game.mlx, render_next_frame, &game);
 	mlx_loop(game.mlx);
 }
 // void	*image;
