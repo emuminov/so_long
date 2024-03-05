@@ -6,11 +6,24 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 10:40:07 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/01 12:07:38 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/05 15:13:47 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/so_long.h"
+
+void	terminate_with_message(t_game *game, char *msg)
+{
+	if (!game)
+	{
+		ft_putstr_fd(msg, STDERR_FILENO);
+		exit(EXIT_FAILURE);
+	}
+	if (game->map.rows)
+		ft_free_split(game->map.rows);
+	ft_putstr_fd(msg, STDERR_FILENO);
+	exit(EXIT_FAILURE);
+}
 
 int	safe_open(char *file)
 {

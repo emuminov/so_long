@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 19:52:31 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/05 15:07:19 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/05 15:13:39 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,18 +24,6 @@
 //   - [x] Map should not be too big
 //   - [x] There should be no non-allowed symbols
 
-void	terminate_with_message(t_game *game, char *msg)
-{
-	if (!game)
-	{
-		ft_putstr_fd(msg, STDERR_FILENO);
-		exit(EXIT_FAILURE);
-	}
-	if (game->map.rows)
-		ft_free_split(game->map.rows);
-	ft_putstr_fd(msg, STDERR_FILENO);
-	exit(EXIT_FAILURE);
-}
 
 void	check_filename_extension(char *file)
 {
@@ -119,11 +107,7 @@ void	check_non_allowed_tokens(t_game *game)
 				game->map.rows[i][j] != exit_token &&
 				game->map.rows[i][j] != player_token &&
 				game->map.rows[i][j] != enemy_token)
-			{
-				ft_free_split(game->map.rows);
-				ft_putstr_fd("Bad token\n", STDERR_FILENO);
-				exit(EXIT_FAILURE);
-			}
+				terminate_with_message(game, "Bad token\n");
 			j++;
 		}
 		i++;
@@ -152,11 +136,7 @@ void	check_exit_and_collectibles_availability(t_game *game)
 
 	cloned_map = clone_matrix(game->map.y, game->map.rows);
 	if (!cloned_map)
-	{
-		ft_free_split(game->map.rows);
-		ft_putstr_fd("Memory error\n", STDERR_FILENO);
-		exit(EXIT_FAILURE);
-	}
+		terminate_with_message(game, "Memory error\n");
 	propagate_tokens(game->map.player_pos, cloned_map);
 	i = 0;
 	while (cloned_map[i])
@@ -164,10 +144,8 @@ void	check_exit_and_collectibles_availability(t_game *game)
 		if (ft_strchr(cloned_map[i], exit_token) ||
 			ft_strchr(cloned_map[i], collectible_token))
 		{
-			ft_free_split(game->map.rows);
 			ft_free_split(cloned_map);
-			ft_putstr_fd("Inaccessible exit or collectible\n", STDERR_FILENO);
-			exit(EXIT_FAILURE);
+			terminate_with_message(game, "Inaccessible exit or collectible\n");
 		}
 		i++;
 	}
