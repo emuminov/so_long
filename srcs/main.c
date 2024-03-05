@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/13 11:56:51 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/05 15:55:46 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/05 16:22:24 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	put_tile_to_pos(t_game *game, void *tile, t_pos pos)
 		tile, pos.x * TILE_SIZE, pos.y * TILE_SIZE);
 }
 
-void	game_cleanup(t_game *game)
+void	end_game(char *msg, t_game *game)
 {
 	mlx_destroy_image(game->mlx, game->tiles.wall);
 	mlx_destroy_image(game->mlx, game->tiles.exit);
@@ -76,7 +76,9 @@ void	game_cleanup(t_game *game)
 	mlx_destroy_display(game->mlx);
 	free(game->mlx);
 	ft_free_split(game->map.rows);
-	exit(0);
+	if (msg)
+		ft_putstr_fd(msg, STDOUT_FILENO);
+	exit(EXIT_SUCCESS);
 }
 
 void	move_player(t_pos new_pos, t_game *game)
@@ -90,12 +92,10 @@ void	move_player(t_pos new_pos, t_game *game)
 		game->map.rows[new_pos.y][new_pos.x] = floor_token;
 		game->collected_count++;
 	}
+	else if (game->map.rows[new_pos.y][new_pos.x] == enemy_token)
+		end_game("You lost!\n", game);
 	else if (game->map.rows[new_pos.y][new_pos.x] == exit_token && game->collected_count == game->token_count.collectible_count)
-	{
-		ft_printf("You won!");
-		game_cleanup(game);
-	}
-	// TODO: if new_pos == enemy YOU LOSE
+		end_game("You won!\n", game);
 	if (new_pos.x < game->map.player_pos.x)
 		game->tiles.player_current = game->tiles.player_left;
 	else if (new_pos.x > game->map.player_pos.x)
@@ -118,9 +118,7 @@ void	move_player(t_pos new_pos, t_game *game)
 int	handle_keyboard_input(int keysym, t_game *game)
 {
 	if (keysym == XK_Escape)
-	{
-		// TODO: quit game
-	}
+		end_game(NULL, game);
 	else if (keysym == XK_a || keysym == XK_Left)
 		move_player((t_pos){.x=game->map.player_pos.x - 1, .y=game->map.player_pos.y}, game);
 	else if (keysym == XK_d || keysym == XK_Right)
