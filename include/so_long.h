@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 09:51:11 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/05 14:44:15 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/06 10:32:30 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ typedef struct	s_tiles
 typedef struct	s_map
 {
 	t_pos	player_pos;
+	t_pos	*collectibles_pos;
 	char	**rows;
 	int		x;
 	int		y;

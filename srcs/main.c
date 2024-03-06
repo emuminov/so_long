@@ -6,37 +6,12 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/13 11:56:51 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/05 16:45:40 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/06 10:58:38 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
 #include "../include/so_long.h"
-
-typedef struct	s_state {
-	void	*mlx;
-	void	*win;
-}				t_state;
-
-int keyhook(int keycode, t_state *vars)
-{
-	(void)vars;
-	printf("The key has been pressed: (%d)\n", keycode);
-	return (0);
-}
-
-int mousehook(int mousecode)
-{
-	printf("Mouse event. %d\n", mousecode);
-	return (0);
-}
-
-int mousemovehook(int x, int y, t_state *vars)
-{
-	(void)vars;
-	printf("Hello! %d %d\n", x, y);
-	return (0);
-}
 
 void	init_xpm_tiles(t_game *game)
 {
@@ -75,6 +50,7 @@ void	end_game(char *msg, t_game *game)
 	mlx_destroy_window(game->mlx, game->win);
 	mlx_destroy_display(game->mlx);
 	free(game->mlx);
+	free(game->map.collectibles_pos);
 	ft_free_split(game->map.rows);
 	if (msg)
 		ft_putstr_fd(msg, STDOUT_FILENO);
@@ -132,65 +108,66 @@ int	handle_keyboard_input(int keysym, t_game *game)
 
 void	render_initial_graphic(t_game *game)
 {
-	int y = 0;
-	while (game->map.rows[y])
+	t_pos	pos;
+
+	pos.y = 0;
+	while (game->map.rows[pos.y])
 	{
-		int x = 0;
-		while (game->map.rows[y][x])
+		pos.x = 0;
+		while (game->map.rows[pos.y][pos.x])
 		{
-			if (game->map.rows[y][x] == wall_token)
-				put_tile_to_pos(game, game->tiles.wall, (t_pos){.x=x, .y=y});
-			else if (game->map.rows[y][x] == floor_token)
-				put_tile_to_pos(game, game->tiles.floor, (t_pos){.x=x, .y=y});
-			else if (game->map.rows[y][x] == collectible_token)
-				put_tile_to_pos(game, game->tiles.collectible_1, (t_pos){.x=x, .y=y});
-			else if (game->map.rows[y][x] == enemy_token)
-				put_tile_to_pos(game, game->tiles.enemy, (t_pos){.x=x, .y=y});
-			else if (game->map.rows[y][x] == exit_token)
-				put_tile_to_pos(game, game->tiles.exit, (t_pos){.x=x, .y=y});
-			else if (game->map.rows[y][x] == player_token)
-				put_tile_to_pos(game, game->tiles.player_right, (t_pos){.x=x, .y=y});
-			x++;
+			if (game->map.rows[pos.y][pos.x] == wall_token)
+				put_tile_to_pos(game, game->tiles.wall, pos);
+			else if (game->map.rows[pos.y][pos.x] == floor_token)
+				put_tile_to_pos(game, game->tiles.floor, pos);
+			else if (game->map.rows[pos.y][pos.x] == collectible_token)
+				put_tile_to_pos(game, game->tiles.collectible_1, pos);
+			else if (game->map.rows[pos.y][pos.x] == enemy_token)
+				put_tile_to_pos(game, game->tiles.enemy, pos);
+			else if (game->map.rows[pos.y][pos.x] == exit_token)
+				put_tile_to_pos(game, game->tiles.exit, pos);
+			else if (game->map.rows[pos.y][pos.x] == player_token)
+				put_tile_to_pos(game, game->tiles.player_right, pos);
+			pos.x++;
 		}
-		y++;
+		pos.y++;
 	}
 	mlx_string_put(game->mlx, game->win, TILE_SIZE / 2, TILE_SIZE / 2, 0xADD8E6, "0");
+}
+
+void	animate_beer(t_game *game, t_pos pos, int *curr_img)
+{
+	if (game->map.rows[pos.y][pos.x] == collectible_token && *curr_img == 0)
+	{
+		put_tile_to_pos(game, game->tiles.collectible_1, pos);
+		*curr_img += 1;
+	}
+	else if (game->map.rows[pos.y][pos.x] == collectible_token && *curr_img == 1)
+	{
+		put_tile_to_pos(game, game->tiles.collectible_2, pos);
+		*curr_img += 1;
+	}
+	else if (game->map.rows[pos.y][pos.x] == collectible_token)
+	{
+		put_tile_to_pos(game, game->tiles.collectible_3, pos);
+		*curr_img = 0;
+	}
 }
 
 int	render_next_frame(t_game *game)
 {
 	static int	frame;
 	static int	curr_img;
-	int	y;
-	int	x;
+	int			i;
 
 	frame++;
-	if (frame % 25000 != 0)
+	if (frame % 50000 != 0)
 		return (0);
-	y = 0;
-	while (game->map.rows[y])
+	i = 0;
+	while ((game->map.collectibles_pos[i].y != -1))
 	{
-		x = 0;
-		while (game->map.rows[y][x])
-		{
-			if (game->map.rows[y][x] == collectible_token && curr_img == 0)
-			{
-				put_tile_to_pos(game, game->tiles.collectible_1, (t_pos){.x=x, .y=y});
-				curr_img++;
-			}
-			else if (game->map.rows[y][x] == collectible_token && curr_img == 1)
-			{
-				put_tile_to_pos(game, game->tiles.collectible_2, (t_pos){.x=x, .y=y});
-				curr_img++;
-			}
-			else if (game->map.rows[y][x] == collectible_token)
-			{
-				put_tile_to_pos(game, game->tiles.collectible_3, (t_pos){.x=x, .y=y});
-				curr_img = 0;
-			}
-			x++;
-		}
-		y++;
+		animate_beer(game, game->map.collectibles_pos[i], &curr_img);
+		i++;
 	}
 	return (0);
 }
@@ -202,37 +179,17 @@ int	main(int argc, char **argv)
 	if (argc != 2)
 		return (EXIT_FAILURE);
 	parse(argv[1], &game);
-	game.map.player_pos.y = 3;
-	game.map.player_pos.x = 1;
-
-	// init mlx and then clear every variable
+	int	i = 0;
+	while ((game.map.collectibles_pos[i].y != -1))
+	{
+		ft_printf("x: %d, y: %d\n", game.map.collectibles_pos[i].x, game.map.collectibles_pos[i].y);
+		i++;
+	}
 	game.mlx = mlx_init();
 	game.win = mlx_new_window(game.mlx, game.map.x * TILE_SIZE, game.map.y * TILE_SIZE, "so_long");
-
-	// init game.tiles
-	// clear everything after
 	init_xpm_tiles(&game);
-
-	// render game.tiles
 	render_initial_graphic(&game);
-
-	// init hooks and loop
 	mlx_key_hook(game.win, handle_keyboard_input, &game);
 	mlx_loop_hook(game.mlx, render_next_frame, &game);
 	mlx_loop(game.mlx);
 }
-// void	*image;
-// t_state	state;
-// int 	width;
-// int 	height;
-//
-// state.mlx = mlx_init();
-// if (!state.mlx)
-// 	return (EXIT_FAILURE);
-// state.win = mlx_new_window(state.mlx, 600, 400, "Hello world!");
-// width = 900;
-// height = 900;
-// image = mlx_xpm_file_to_image(state.mlx, "./us.xpm", &width, &height);
-// mlx_put_image_to_window(state.mlx, state.win, image, 0, 0);
-// mlx_loop(state.mlx);
-// free(state.mlx);

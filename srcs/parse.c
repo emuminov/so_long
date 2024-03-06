@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 09:48:02 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/05 14:56:06 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/06 10:34:10 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,7 @@ static t_list	*read_map_to_list(int fd)
 
 	curr_line = get_next_line(fd);
 	if (!curr_line)
-	{
-		ft_putstr_fd("Empty map\n", STDERR_FILENO);
-		exit(EXIT_FAILURE);
-	}
+		terminate_with_message(NULL, "Empty map\n");
 	rows_list = ft_lstnew(curr_line);
 	while (curr_line)
 	{
@@ -34,8 +31,7 @@ static t_list	*read_map_to_list(int fd)
 		if (!node)
 		{
 			ft_lstclear(&rows_list, free);
-			ft_putstr_fd("Memory error while reading map\n", STDERR_FILENO);
-			exit(EXIT_FAILURE);
+			terminate_with_message(NULL, "Memory error while reading map\n");
 		}
 		ft_lstadd_back(&rows_list, node);
 	}
@@ -101,12 +97,38 @@ static void	remove_new_lines(char **rows)
 			if (rows[i][j] == '\n')
 			{
 				rows[i][j] = '\0';
-				break;
+				break ;
 			}
 			j++;
 		}
 		i++;
 	}
+}
+
+void	get_collectibles_position(t_game *game)
+{
+	t_pos	*res;
+	t_pos	pos;
+	int		i;
+
+	res = malloc(sizeof(t_pos) * (game->token_count.collectible_count + 1));
+	if (!res)
+		terminate_with_message(game, "Memory error\n");
+	pos.y = 0;
+	i = 0;
+	while (game->map.rows[pos.y])
+	{
+		pos.x = 0;
+		while (game->map.rows[pos.y][pos.x])
+		{
+			if (game->map.rows[pos.y][pos.x] == collectible_token)
+				res[i++] = pos;
+			pos.x++;
+		}
+		pos.y++;
+	}
+	res[i] = (t_pos){.x=-1, .y=-1};
+	game->map.collectibles_pos = res;
 }
 
 void	parse(char *file, t_game *game)
@@ -125,4 +147,5 @@ void	parse(char *file, t_game *game)
 	check_walls_presence(game);
 	check_exit_and_collectibles_presence(game);
 	check_exit_and_collectibles_availability(game);
+	get_collectibles_position(game);
 }
