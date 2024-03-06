@@ -6,21 +6,21 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 10:40:07 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/05 16:24:58 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/06 14:20:39 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/so_long.h"
 
-void	terminate_with_message(t_game *game, char *msg)
+void	terminate_with_message(t_game *g, char *msg)
 {
-	if (!game)
+	if (!g)
 	{
 		ft_putstr_fd(msg, STDERR_FILENO);
 		exit(EXIT_FAILURE);
 	}
-	if (game->map.rows)
-		ft_free_split(game->map.rows);
+	if (g->map.rows)
+		ft_free_split(g->map.rows);
 	ft_putstr_fd(msg, STDERR_FILENO);
 	exit(EXIT_FAILURE);
 }

@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 09:48:02 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/06 10:34:10 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/06 14:20:32 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,21 +39,21 @@ static t_list	*read_map_to_list(int fd)
 }
 
 /* Initializes dimensions and checks if the map is rectangular or too big */
-static void	check_dimensions(t_game *game)
+static void	check_dimensions(t_game *g)
 {
 	int	i;
 
 	i = 0;
-	game->map.x = ft_strlen(game->map.rows[0]);
-	while (game->map.rows[i])
+	g->map.x = ft_strlen(g->map.rows[0]);
+	while (g->map.rows[i])
 	{
-		if ((int)ft_strlen(game->map.rows[i]) != game->map.x)
-			terminate_with_message(game, "Map is not rectangular\n");
+		if ((int)ft_strlen(g->map.rows[i]) != g->map.x)
+			terminate_with_message(g, "Map is not rectangular\n");
 		i++;
 	}
-	game->map.y = i;
-	if (game->map.y > 15 || game->map.x > 30)
-		terminate_with_message(game, "Map is too big\n");
+	g->map.y = i;
+	if (g->map.y > 15 || g->map.x > 30)
+		terminate_with_message(g, "Map is too big\n");
 }
 
 static char	**list_to_matrix(t_list *lst)
@@ -85,8 +85,8 @@ static char	**list_to_matrix(t_list *lst)
 
 static void	remove_new_lines(char **rows)
 {
-	int		i;
-	int		j;
+	int	i;
+	int	j;
 
 	i = 0;
 	while (rows[i])
@@ -105,47 +105,47 @@ static void	remove_new_lines(char **rows)
 	}
 }
 
-void	get_collectibles_position(t_game *game)
+void	get_collectibles_position(t_game *g)
 {
 	t_pos	*res;
 	t_pos	pos;
 	int		i;
 
-	res = malloc(sizeof(t_pos) * (game->token_count.collectible_count + 1));
+	res = malloc(sizeof(t_pos) * (g->token_count.collectible_count + 1));
 	if (!res)
-		terminate_with_message(game, "Memory error\n");
+		terminate_with_message(g, "Memory error\n");
 	pos.y = 0;
 	i = 0;
-	while (game->map.rows[pos.y])
+	while (g->map.rows[pos.y])
 	{
 		pos.x = 0;
-		while (game->map.rows[pos.y][pos.x])
+		while (g->map.rows[pos.y][pos.x])
 		{
-			if (game->map.rows[pos.y][pos.x] == collectible_token)
+			if (g->map.rows[pos.y][pos.x] == collectible_token)
 				res[i++] = pos;
 			pos.x++;
 		}
 		pos.y++;
 	}
-	res[i] = (t_pos){.x=-1, .y=-1};
-	game->map.collectibles_pos = res;
+	res[i] = (t_pos){.x = -1, .y = -1};
+	g->map.collectibles_pos = res;
 }
 
-void	parse(char *file, t_game *game)
+void	parse(char *file, t_game *g)
 {
-	int				fd;
-	t_list			*rows_list;
+	int		fd;
+	t_list	*rows_list;
 
 	check_filename_extension(file);
 	fd = safe_open(file);
 	rows_list = read_map_to_list(fd);
 	safe_close(fd, rows_list);
-	game->map.rows = list_to_matrix(rows_list);
-	remove_new_lines(game->map.rows);
-	check_dimensions(game);
-	check_non_allowed_tokens(game);
-	check_walls_presence(game);
-	check_exit_and_collectibles_presence(game);
-	check_exit_and_collectibles_availability(game);
-	get_collectibles_position(game);
+	g->map.rows = list_to_matrix(rows_list);
+	remove_new_lines(g->map.rows);
+	check_dimensions(g);
+	check_non_allowed_tokens(g);
+	check_walls_presence(g);
+	check_exit_and_collectibles_presence(g);
+	check_exit_and_collectibles_availability(g);
+	get_collectibles_position(g);
 }
