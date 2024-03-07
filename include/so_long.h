@@ -6,16 +6,16 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 09:51:11 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/06 18:26:03 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/07 23:51:13 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SO_LONG_H
 # define SO_LONG_H
-# include <X11/keysym.h>
-# include <fcntl.h>
 # include "../libft/libft.h"
 # include "../mlx/mlx.h"
+# include <X11/keysym.h>
+# include <fcntl.h>
 # define TILE_SIZE 64
 # define FLOOR_TILE_PATH "./assets/floor.xpm"
 # define WALL_TILE_PATH "./assets/wall.xpm"
@@ -27,7 +27,7 @@
 # define ENEMY_TILE_PATH "./assets/enemy.xpm"
 # define EXIT_TILE_PATH "./assets/exit.xpm"
 
-enum e_tokens
+enum				e_tokens
 {
 	floor_token = '0',
 	wall_token = '1',
@@ -38,43 +38,43 @@ enum e_tokens
 	occupied_token = '-'
 };
 
-typedef struct	s_pos
+typedef struct s_pos
 {
-	int	x;
-	int	y;
-}				t_pos; 
+	int				x;
+	int				y;
+}					t_pos;
 
-typedef struct	s_tiles
+typedef struct s_tiles
 {
-	void	*floor;
-	void	*wall;
-	void	*player_left;
-	void	*player_right;
-	void	*player_current;
-	void	*collectible_1;
-	void	*collectible_2;
-	void	*collectible_3;
-	void	*exit;
-	void	*enemy;
-}				t_tiles;
+	void			*floor;
+	void			*wall;
+	void			*player_left;
+	void			*player_right;
+	void			*player_current;
+	void			*collectible_1;
+	void			*collectible_2;
+	void			*collectible_3;
+	void			*exit;
+	void			*enemy;
+}					t_tiles;
 
-typedef struct	s_map
+typedef struct s_map
 {
-	t_pos	player_pos;
-	t_pos	*collectibles_pos;
-	char	**rows;
-	int		x;
-	int		y;
-}				t_map;
+	t_pos			player_pos;
+	t_pos			*collectibles_pos;
+	char			**rows;
+	int				x;
+	int				y;
+}					t_map;
 
-typedef struct	s_token_count
+typedef struct s_token_count
 {
-	int		player_count;
-	int		collectible_count;
-	int		exit_count;
-}				t_token_count;
+	int				player_count;
+	int				collectible_count;
+	int				exit_count;
+}					t_token_count;
 
-typedef struct	s_game
+typedef struct s_game
 {
 	void			*mlx;
 	void			*win;
@@ -83,17 +83,26 @@ typedef struct	s_game
 	t_token_count	token_count;
 	int				player_moves_count;
 	int				collected_count;
-}				t_game;
+}					t_game;
 
-void	parse(char *file, t_game *g);
-int		safe_open(char *file);
-int		safe_close(int fd, t_list *lst);
-char	**clone_matrix(int l, char **matrix);
-void	check_filename_extension(char *file);
-void	check_non_allowed_tokens(t_game *g);
-void	check_walls_presence(t_game *g);
-void	check_exit_and_collectibles_presence(t_game *g);
-void	check_exit_and_collectibles_availability(t_game *g);
-void	terminate_with_message(t_game *g, char *msg);
+void				parse(char *file, t_game *g);
+int					safe_open(char *file);
+int					safe_close(int fd, t_list *lst);
+char				**clone_matrix(int l, char **matrix);
+void				check_filename_extension(char *file);
+void				check_non_allowed_tokens(t_game *g);
+void				check_walls_presence(t_game *g);
+void				check_exit_and_collectibles_presence(t_game *g);
+void				check_exit_and_collectibles_availability(t_game *g);
+void				end_game(int is_error, char *msg, t_game *g);
+char				**list_to_matrix(t_list *lst);
+void				init_mlx(t_game *g);
+void				put_tile_to_pos(t_game *g, void *tile, t_pos pos);
+void				init_xpm_tiles(t_game *g);
+void				render_initial_graphic(t_game *g);
+void				end_game(int is_error, char *msg, t_game *g);
+void				move_player(t_pos new_pos, t_game *g);
+int					render_next_frame(t_game *g);
+int					handle_keyboard_input(int keysym, t_game *g);
 
-#endif 
+#endif

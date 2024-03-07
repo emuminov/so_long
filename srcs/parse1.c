@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse.c                                            :+:      :+:    :+:   */
+/*   parse1.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 09:48:02 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/06 14:20:32 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/07 23:39:20 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static t_list	*read_map_to_list(int fd)
 
 	curr_line = get_next_line(fd);
 	if (!curr_line)
-		terminate_with_message(NULL, "Empty map\n");
+		end_game(1, "Empty map\n", NULL);
 	rows_list = ft_lstnew(curr_line);
 	while (curr_line)
 	{
@@ -31,7 +31,7 @@ static t_list	*read_map_to_list(int fd)
 		if (!node)
 		{
 			ft_lstclear(&rows_list, free);
-			terminate_with_message(NULL, "Memory error while reading map\n");
+			end_game(1, "Memory error while reading map\n", NULL);
 		}
 		ft_lstadd_back(&rows_list, node);
 	}
@@ -48,39 +48,12 @@ static void	check_dimensions(t_game *g)
 	while (g->map.rows[i])
 	{
 		if ((int)ft_strlen(g->map.rows[i]) != g->map.x)
-			terminate_with_message(g, "Map is not rectangular\n");
+			end_game(1, "Map is not rectangular\n", g);
 		i++;
 	}
 	g->map.y = i;
 	if (g->map.y > 15 || g->map.x > 30)
-		terminate_with_message(g, "Map is too big\n");
-}
-
-static char	**list_to_matrix(t_list *lst)
-{
-	char	**res;
-	t_list	*curr;
-	t_list	*next;
-	int		i;
-
-	res = malloc(sizeof(char *) * (ft_lstsize(lst) + 1));
-	if (!res)
-	{
-		ft_lstclear(&lst, free);
-		terminate_with_message(NULL, "Memory error\n");
-	}
-	curr = lst;
-	i = 0;
-	while (curr)
-	{
-		res[i] = curr->content;
-		next = curr->next;
-		free(curr);
-		curr = next;
-		i++;
-	}
-	res[i] = NULL;
-	return (res);
+		end_game(1, "Map is too big\n", g);
 }
 
 static void	remove_new_lines(char **rows)
@@ -105,7 +78,7 @@ static void	remove_new_lines(char **rows)
 	}
 }
 
-void	get_collectibles_position(t_game *g)
+static void	get_collectibles_position(t_game *g)
 {
 	t_pos	*res;
 	t_pos	pos;
@@ -113,7 +86,7 @@ void	get_collectibles_position(t_game *g)
 
 	res = malloc(sizeof(t_pos) * (g->token_count.collectible_count + 1));
 	if (!res)
-		terminate_with_message(g, "Memory error\n");
+		end_game(1, "Memory error\n", g);
 	pos.y = 0;
 	i = 0;
 	while (g->map.rows[pos.y])

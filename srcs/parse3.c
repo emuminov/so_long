@@ -1,29 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   check_errors.c                                     :+:      :+:    :+:   */
+/*   parse3.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 19:52:31 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/06 14:26:22 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/07 23:37:12 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/so_long.h"
-
-void	check_filename_extension(char *file)
-{
-	int		len;
-	char	*ext;
-
-	len = ft_strlen(file);
-	if (len < 4)
-		terminate_with_message(NULL, "Bad filename\n");
-	ext = ft_strnstr(&file[len - 4], ".ber", 4);
-	if (!ext)
-		terminate_with_message(NULL, "Bad extension\n");
-}
 
 void	check_exit_and_collectibles_presence(t_game *g)
 {
@@ -49,10 +36,9 @@ void	check_exit_and_collectibles_presence(t_game *g)
 		pos.y++;
 	}
 	if (g->token_count.player_count > 1 || g->token_count.exit_count > 1
-		|| g->token_count.player_count == 0
-		|| g->token_count.exit_count == 0
+		|| g->token_count.player_count == 0 || g->token_count.exit_count == 0
 		|| g->token_count.collectible_count == 0)
-		terminate_with_message(g, "Bad map\n");
+		end_game(1, "Bad map\n", g);
 }
 
 void	check_walls_presence(t_game *g)
@@ -64,7 +50,7 @@ void	check_walls_presence(t_game *g)
 	{
 		if (g->map.rows[0][i] != wall_token || g->map.rows[g->map.y
 			- 1][i] != wall_token)
-			terminate_with_message(g, "Bad walls\n");
+			end_game(1, "Bad walls\n", g);
 		i++;
 	}
 	i = 0;
@@ -72,7 +58,7 @@ void	check_walls_presence(t_game *g)
 	{
 		if (g->map.rows[i][0] != wall_token || g->map.rows[i][g->map.x
 			- 1] != wall_token)
-			terminate_with_message(g, "Bad walls\n");
+			end_game(1, "Bad walls\n", g);
 		i++;
 	}
 }
@@ -94,7 +80,7 @@ void	check_non_allowed_tokens(t_game *g)
 				&& g->map.rows[i][j] != exit_token
 				&& g->map.rows[i][j] != player_token
 				&& g->map.rows[i][j] != enemy_token)
-				terminate_with_message(g, "Bad token\n");
+				end_game(1, "Bad token\n", g);
 			j++;
 		}
 		i++;
@@ -121,7 +107,7 @@ void	check_exit_and_collectibles_availability(t_game *g)
 
 	cloned_map = clone_matrix(g->map.y, g->map.rows);
 	if (!cloned_map)
-		terminate_with_message(g, "Memory error\n");
+		end_game(1, "Memory error\n", g);
 	propagate_tokens(g->map.player_pos, cloned_map);
 	i = 0;
 	while (cloned_map[i])
@@ -130,7 +116,7 @@ void	check_exit_and_collectibles_availability(t_game *g)
 				collectible_token))
 		{
 			ft_free_split(cloned_map);
-			terminate_with_message(g, "Inaccessible exit or collectible\n");
+			end_game(1, "Inaccessible exit or collectible\n", g);
 		}
 		i++;
 	}

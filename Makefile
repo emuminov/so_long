@@ -8,10 +8,14 @@ MINILIBX_DIR=mlx
 MINILIBX=$(MINILIBX_DIR)/libmlx_Linux.a
 MINILIBX_FLAGS=-L ./mlx -lmlx -Ilmlx -lXext -lX11
 
-FILES=main.c \
-	  parse.c \
-	  check_errors.c \
-	  utils.c
+FILES=animation.c \
+graphic.c \
+main.c \
+move.c \
+parse1.c \
+parse2.c \
+parse3.c
+
 HEAD_FILE=so_long.h
 
 HEAD_DIR=include
