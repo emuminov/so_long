@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 23:43:40 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/08 00:03:33 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/08 00:09:08 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static void	update_move_count(t_game *g)
 	free(player_moves_count_str);
 }
 
-void	move_player(t_pos new_pos, t_game *g)
+static void	move_player(t_pos new_pos, t_game *g)
 {
 	if (g->map.rows[new_pos.y][new_pos.x] == wall_token)
 		return ;
