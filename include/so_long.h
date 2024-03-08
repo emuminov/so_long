@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 09:51:11 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/07 23:51:13 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/08 00:09:04 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,6 @@ void				put_tile_to_pos(t_game *g, void *tile, t_pos pos);
 void				init_xpm_tiles(t_game *g);
 void				render_initial_graphic(t_game *g);
 void				end_game(int is_error, char *msg, t_game *g);
-void				move_player(t_pos new_pos, t_game *g);
 int					render_next_frame(t_game *g);
 int					handle_keyboard_input(int keysym, t_game *g);
 
