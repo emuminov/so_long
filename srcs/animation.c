@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 23:46:57 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/07 23:47:24 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/08 11:07:00 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	render_next_frame(t_game *g)
 	int			i;
 
 	frame++;
-	if (frame % 25000 != 0)
+	if (frame % 20000 != 0)
 		return (0);
 	i = 0;
 	while ((g->map.collectibles_pos[i].y != -1))

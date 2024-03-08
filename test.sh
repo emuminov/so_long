@@ -16,3 +16,4 @@ valgrind --leak-check=full ./so_long ./maps/duplicate_player.ber
 valgrind --leak-check=full ./so_long ./maps/duplicate_exit.ber
 valgrind --leak-check=full ./so_long ./maps/map_not_reachable1.ber
 valgrind --leak-check=full ./so_long ./maps/map_not_reachable2.ber
+valgrind --leak-check=full ./so_long ./maps/map1.ber

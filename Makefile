@@ -32,20 +32,25 @@ LIB_DIR=libft
 LIB=$(LIB_DIR)/libft.a
 
 #rules---------------------------------------------
+all: $(NAME)
+
 $(NAME): $(LIB) $(HEADER) $(OBJS)
 	$(MAKE) -C $(MINILIBX_DIR)
 	$(CC) $(CFLAGS) $(OBJS) $(MINILIBX) $(LIB) -o $@ $(MINILIBX_FLAGS)
 
-$(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c $(SRCS) $(HEADER)
+$(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c $(HEADER)
 	@mkdir -p $(OBJS_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(LIB): libft
 
+$(MINILIBX): mlx
+
 libft:
 	$(MAKE) -C $(LIB_DIR)
 
-all: $(NAME)
+mlx:
+	$(MAKE) -C $(MINILIBX_DIR)
 
 clean:
 	$(MAKE) -C $(LIB_DIR) $@
