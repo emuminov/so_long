@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 09:51:11 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/08 11:24:29 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/08 11:30:10 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,23 +86,22 @@ typedef struct s_game
 	int				collected_count;
 }					t_game;
 
-void				parse(char *file, t_game *g);
-int					safe_open(char *file);
-int					safe_close(int fd, t_list *lst);
-char				**clone_matrix(int l, char **matrix);
+void				check_exit_and_collectibles_availability(t_game *g);
+void				check_exit_and_collectibles_presence(t_game *g);
 void				check_filename_extension(char *file);
 void				check_non_allowed_tokens(t_game *g);
 void				check_walls_presence(t_game *g);
-void				check_exit_and_collectibles_presence(t_game *g);
-void				check_exit_and_collectibles_availability(t_game *g);
+char				**clone_matrix(int l, char **matrix);
 void				end_game(int is_error, char *msg, t_game *g);
-char				**list_to_matrix(t_list *lst);
-void				init_mlx(t_game *g);
-void				put_tile_to_pos(t_game *g, void *tile, t_pos pos);
-void				init_xpm_tiles(t_game *g);
-void				render_initial_graphic(t_game *g);
-void				end_game(int is_error, char *msg, t_game *g);
-int					render_next_frame(t_game *g);
 int					handle_keyboard_input(int keysym, t_game *g);
+void				init_mlx(t_game *g);
+void				init_xpm_tiles(t_game *g);
+char				**list_to_matrix(t_list *lst);
+void				parse(char *file, t_game *g);
+void				put_tile_to_pos(t_game *g, void *tile, t_pos pos);
+void				render_initial_graphic(t_game *g);
+int					render_next_frame(t_game *g);
+int					safe_close(int fd, t_list *lst);
+int					safe_open(char *file);
 
 #endif
