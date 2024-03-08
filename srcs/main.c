@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/13 11:56:51 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/08 11:09:31 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/08 11:27:58 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,12 @@ void	end_game(int is_error, char *msg, t_game *g)
 	exit(EXIT_SUCCESS);
 }
 
+int	handle_cross(t_game *g)
+{
+	end_game(0, NULL, g);
+	return (EXIT_SUCCESS);
+}
+
 int	main(int argc, char **argv)
 {
 	static t_game	game;
@@ -59,6 +65,7 @@ int	main(int argc, char **argv)
 	init_xpm_tiles(&game);
 	render_initial_graphic(&game);
 	mlx_key_hook(game.win, handle_keyboard_input, &game);
+	mlx_hook(game.win, DestroyNotify, StructureNotifyMask, handle_cross, &game);
 	mlx_loop_hook(game.mlx, render_next_frame, &game);
 	mlx_loop(game.mlx);
 }

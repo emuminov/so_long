@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 09:51:11 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/08 00:09:04 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/08 11:24:29 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define SO_LONG_H
 # include "../libft/libft.h"
 # include "../mlx/mlx.h"
+# include "../mlx/mlx_int.h"
 # include <X11/keysym.h>
 # include <fcntl.h>
 # define TILE_SIZE 64
