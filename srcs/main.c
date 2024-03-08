@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/13 11:56:51 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/08 12:01:00 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/08 19:37:22 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ void	put_end_score(t_game *g)
 		ft_putstr_fd("🍺", STDOUT_FILENO);
 		i++;
 	}
+	if (i == 0)
+		ft_putstr_fd("Sobriety :(", STDOUT_FILENO);
 	ft_putstr_fd("\n", STDOUT_FILENO);
 }
 
