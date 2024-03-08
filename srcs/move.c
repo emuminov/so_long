@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 23:43:40 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/08 00:09:08 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/08 11:55:42 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,10 +51,10 @@ static void	move_player(t_pos new_pos, t_game *g)
 		g->collected_count++;
 	}
 	else if (g->map.rows[new_pos.y][new_pos.x] == enemy_token)
-		end_game(0, "You lost!\n", g);
+		end_game(0, "You lost! 😔\n", g);
 	else if (g->map.rows[new_pos.y][new_pos.x] == exit_token
 		&& g->collected_count == g->token_count.collectible_count)
-		end_game(0, "You won!\n", g);
+		end_game(0, "You won! 🎉\n", g);
 	render_player_position(new_pos, g);
 	update_move_count(g);
 }

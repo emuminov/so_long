@@ -6,7 +6,7 @@
 /*   By: emuminov <emuminov@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/13 11:56:51 by emuminov          #+#    #+#             */
-/*   Updated: 2024/03/08 11:27:58 by emuminov         ###   ########.fr       */
+/*   Updated: 2024/03/08 12:01:00 by emuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,21 @@ static void	free_mlx(t_game *g)
 	free(g->mlx);
 }
 
+void	put_end_score(t_game *g)
+{
+	int	i;
+
+	ft_printf("You made %d moves in total\n", g->player_moves_count + 1);
+	ft_printf("Your end score: ");
+	i = 0;
+	while (i < g->collected_count)
+	{
+		ft_putstr_fd("🍺", STDOUT_FILENO);
+		i++;
+	}
+	ft_putstr_fd("\n", STDOUT_FILENO);
+}
+
 void	end_game(int is_error, char *msg, t_game *g)
 {
 	if (g)
@@ -45,6 +60,7 @@ void	end_game(int is_error, char *msg, t_game *g)
 		ft_putstr_fd(msg, STDERR_FILENO);
 	if (is_error)
 		exit(EXIT_FAILURE);
+	put_end_score(g);
 	exit(EXIT_SUCCESS);
 }
 
